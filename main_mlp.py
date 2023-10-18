@@ -197,7 +197,7 @@ for city in cities:
                 f.write(str(t2m_pred.round(4)))
 
         ### Statistical file output
-        with open('Stats.csv', 'a', newline='') as file:
+        with open('Stats_vae_mlp.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(stat_list)
         plt.close()

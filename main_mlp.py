@@ -85,9 +85,6 @@ for city in cities:
                                               data_out=x_test1[:, 0],
                                               variables=variables, anomalies=False, plot=True)
 
-        with open('Stats.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(str(city[0]))
         stat_list = []
 
         for delay in range(1, 5):

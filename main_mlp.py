@@ -139,7 +139,7 @@ for city in cities:
 
             t2m_pred = t2m_pred[:, 0, lat, long, 0]
 
-            """A series of 2 cross-checks to verify the integrity of the code."""
+            """A series of 3 cross-checks to verify the integrity of the code."""
             # To cross-check the ground truth with raw data for given year and city
             # plt.figure()
             # plt.plot(ground_truth)
@@ -163,7 +163,6 @@ for city in cities:
 
 
             """Outputs and exports of results"""
-
             # First one is the figure, sketched in matplotlib
             plt.figure()
             plt.plot(np.concatenate((np.ones(delay) * np.nan, ground_truth - persistence), axis=0), 'g--', label='persistence')

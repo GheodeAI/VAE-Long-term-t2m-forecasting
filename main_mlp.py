@@ -20,6 +20,17 @@ import csv
 
 
 def statistical_analysis(true, pred):
+    """This is to calculate the mean squared error (mse) and mean absolute error (mae) of forecasted data.
+
+        Args:
+            true (float vector): The real temperature data in given time period for given city.
+            pred (float vector): The forecasted temperature data in given time period for given city.
+                The number of elements of 'pred' must be the same as 'true'.
+        
+        Returns:
+            mse, mae (list): A list of 2 values, the first one calculated mse, the second one the calculated mae.
+    """
+    
     from sklearn.metrics import mean_squared_error
     from sklearn.metrics import mean_absolute_error
 

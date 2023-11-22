@@ -19,12 +19,12 @@ def random_mask(img):
 
 
 class AE_PRED:
-    """The VAE methodology to handle the climate data
+    """The AE methodology to handle the climate data
 
     Args:
         input_dim (int): The input size of the image (number of pixels, must be symmetric for both axes)
         latent_dim (int): The size of latent space (number of neurons)
-        VAE (bool): If True then the variational autoencoder is utilised, otherwise a usual
+        AE (bool): If True then the variational autoencoder is utilised, otherwise a usual
         channels_in (int): The number of the input variables, e.g., if 'msl', 't2m' and 'sst',
         then channels_in equal to 3
         channels_out (int): The number of the output variables, e.g., if 't2m' only, then channels_out equal 3
@@ -33,13 +33,13 @@ class AE_PRED:
         model (h5): The trained model
     """
 
-    def __init__(self, input_dim, latent_dim, VAE, channels_in, channels_out):
+    def __init__(self, input_dim, latent_dim, AE, channels_in, channels_out):
         self.input_dim = input_dim
         self.latent_dim = latent_dim
         self.encoder = None
         self.decoder = None
         self.autoencoder = None
-        self.VAE = VAE
+        self.AE = AE
         self.channels_in = channels_in
         self.channels_out = channels_out
         self._build()
@@ -70,7 +70,7 @@ class AE_PRED:
 
         encoded = layers.Dense(self.latent_dim, activation=layers.LeakyReLU(alpha=0.3))(x)
 
-        if self.VAE:
+        if self.AE:
             z_mean = layers.Dense(self.latent_dim)(encoded)
             z_log_var = layers.Dense(self.latent_dim)(encoded)
             z = tf.keras.layers.Lambda(sampling, output_shape=(self.latent_dim,))([z_mean, z_log_var])
@@ -91,7 +91,7 @@ class AE_PRED:
 
         decoded = layers.Conv2D(self.channels_out, 3, activation='selu', padding='same', strides=1)(x)
 
-        if self.VAE:
+        if self.AE:
             self.encoder = keras.Model(input_img, [z_mean, z_log_var, z], name='encoder')
             self.decoder = keras.Model(latent_inputs, decoded)
             outputs = self.decoder(self.encoder(input_img)[2])

@@ -1,11 +1,11 @@
-"""The code to run the VAE+MLP methodology to forecast the 2-meter air temperatures in 7 different cities which are
+"""The code to run the AE+MLP methodology to forecast the 2-meter air temperatures in 7 different cities which are
     given as coordinates of longitude and latitude. All the climate data we are using were downloaded from Copernicus
     CCS, which can be accessed with following link.
 
     https://climate.copernicus.eu/
 
-    1st part: the VAE
-    2nd part: the MLP (hence VAE+MLP)
+    1st part: the AE
+    2nd part: the MLP (hence AE+MLP)
 """
 
 
@@ -74,11 +74,11 @@ for city in cities:
         tf.keras.backend.clear_session()
         timer = round(time.time())
 
-        VAE = True
-        model_1 = Algorithms.AE_PRED(80, 64, VAE=VAE, channels_in=len(variables), channels_out=len(variables))
+        AE = True
+        model_1 = Algorithms.AE_PRED(80, 64, AE=AE, channels_in=len(variables), channels_out=len(variables))
         model_1.compile(loss='mse')
         model_1.fit(x_train1, x_train1, epochs=5000, batch_size=128, verbose=0)
-        name_1 = city[0] + '_' + str(iter) + '_VAE_' + str(VAE) + '_' + str(timer) + '.h5'
+        name_1 = city[0] + '_' + str(iter) + '_AE_' + str(AE) + '_' + str(timer) + '.h5'
         model_1.autoencoder.save(name_1)
 
         dl_anomalies_test = reading.propagate(name=name_1, data_in=x_test1[:, 0],
@@ -93,7 +93,7 @@ for city in cities:
                 Again, each model is saved in the end in the form of h5.
             """
 
-            # Prepare the DL deviations by forecasting the VAE, the data is then input into the MLP
+            # Prepare the DL deviations by forecasting the AE, the data is then input into the MLP
             (climate_anomalies_train, climate_anomalies_test) = Devs.prepare_deviations(['t2m'], border=year_of_pred)
             (__, climate_anomalies_train_out) = prepare_data.fit_delay(climate_anomalies_train, delay=delay)
             prepare_data.plot_hist(climate_anomalies_train, climate_anomalies_test, name='climate_anomalies')
@@ -164,20 +164,20 @@ for city in cities:
             plt.figure()
             plt.plot(np.concatenate((np.ones(delay) * np.nan, ground_truth - persistence), axis=0), 'g--', label='persistence')
             plt.plot(np.concatenate((np.ones(delay) * np.nan, ground_truth - climate), axis=0), 'k--', label='climatology')
-            plt.plot(np.concatenate((np.ones(delay) * np.nan, ground_truth - t2m_pred), axis=0), 'r', label='VAE+MLP')
+            plt.plot(np.concatenate((np.ones(delay) * np.nan, ground_truth - t2m_pred), axis=0), 'r', label='AE+MLP')
             plt.title('Lead time: ' + str(delay) + ', year: ' + str(year_of_pred))
             plt.ylabel('Error [\N{degree sign} Celsius]')
             plt.xlabel('Week')
             plt.grid()
             plt.legend()
-            plt.savefig(city[0] + '_' + str(iter) + '_2nd_VAE_MLP_' + str(delay) + '_' + str(timer) + '.png')
+            plt.savefig(city[0] + '_' + str(iter) + '_2nd_AE_MLP_' + str(delay) + '_' + str(timer) + '.png')
 
             # The second one is the statistical table, which comes in the .txt format
             stats = statistical_analysis(ground_truth, t2m_pred)
             stat_list.append(stats[0])
             stat_list.append(stats[1])
 
-            with open(city[0]+'_stats_'+str(iter)+'VAE_'+str(VAE)+'_MLP_'+str(timer)+'_delay_'+str(delay)+'.txt', 'w') as f:
+            with open(city[0]+'_stats_'+str(iter)+'AE_'+str(AE)+'_MLP_'+str(timer)+'_delay_'+str(delay)+'.txt', 'w') as f:
                 f.write('Stats file for further research.\n')
                 f.write('\n**********\n')
                 f.write('\npersistence\n')
@@ -197,7 +197,7 @@ for city in cities:
                 f.write(str(t2m_pred.round(4)))
 
         ### Statistical file output
-        with open('Stats_vae_mlp.csv', 'a', newline='') as file:
+        with open('Stats_ae_mlp.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(stat_list)
         plt.close()

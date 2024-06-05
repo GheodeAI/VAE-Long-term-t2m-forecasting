@@ -54,15 +54,15 @@ class AE_PRED:
 
         x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
         x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
+        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
 
         x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
         x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
+        x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
 
         x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
         x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
+        x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
 
         x = layers.Flatten()(x)
         x = layers.Dense(256, activation=layers.LeakyReLU(alpha=0.3))(x)
@@ -81,15 +81,15 @@ class AE_PRED:
             x = layers.Dense(256, activation=layers.LeakyReLU(alpha=0.3))(encoded)
 
         x = layers.Dropout(0.3)(x)
-        x = layers.Dense(100, activation=layers.LeakyReLU(alpha=0.3))(x)
-        x = layers.Reshape((10, 10, 1))(x)
+        x = layers.Dense(9, activation=layers.LeakyReLU(alpha=0.3))(x)
+        x = layers.Reshape((3, 3, 1))(x)
 
-        x = layers.Conv2DTranspose(128, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
-        x = layers.Conv2DTranspose(64, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
-        x = layers.Conv2DTranspose(32, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=2)(x)
+        x = layers.Conv2DTranspose(128, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
+        x = layers.Conv2DTranspose(64, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
+        x = layers.Conv2DTranspose(32, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
         x = layers.Conv2D(3, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
 
-        decoded = layers.Conv2D(self.channels_out, 3, activation='selu', padding='same', strides=1)(x)
+        decoded = layers.Conv2D(self.channels_out, 2, activation='selu', padding='valid', strides=1)(x)
 
         if self.AE:
             self.encoder = keras.Model(input_img, [z_mean, z_log_var, z], name='encoder')

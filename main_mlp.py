@@ -94,7 +94,7 @@ for city in cities:
             """
 
             # Prepare the DL deviations by forecasting the AE, the data is then input into the MLP
-            (climate_anomalies_train, climate_anomalies_test) = Devs.prepare_deviations(['t2m'])
+            (climate_anomalies_train, climate_anomalies_test) = Devs.prepare_deviations(['t2m'], border=year_of_pred)
             (__, climate_anomalies_train_out) = prepare_data.fit_delay(climate_anomalies_train, delay=delay)
             prepare_data.plot_hist(climate_anomalies_train, climate_anomalies_test, name='climate_anomalies')
 

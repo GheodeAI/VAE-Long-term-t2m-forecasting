@@ -6,7 +6,7 @@ font = {'family' : 'normal',
 
 plt.rc('font', **font)
 
-ds_X = xr.open_dataset('D:/GheodeAI_full/North_1_deg_weekly_reduced.nc')
+ds_X = xr.open_dataset('../North_1_deg_weekly_reduced.nc')
 
 fig, (ax1, ax2) = plt.subplots(2, 1)
 cordoba = ds_X.t2m.sel(latitude=38, longitude=-4, time=ds_X.time.dt.year == 1995, method='nearest')

@@ -48,21 +48,21 @@ class AE_PRED:
         input_img = keras.Input(shape=(self.input_dim, self.input_dim, self.channels_in))
         x = random_mask(input_img)
 
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
 
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
-
-        x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(32, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
         x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
 
-        x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
-        x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(64, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
         x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
+
+        # x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(128, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(256, 3, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
 
         x = layers.Flatten()(x)
         x = layers.Dense(256, activation=layers.LeakyReLU(alpha=0.3))(x)
@@ -81,13 +81,13 @@ class AE_PRED:
             x = layers.Dense(256, activation=layers.LeakyReLU(alpha=0.3))(encoded)
 
         x = layers.Dropout(0.3)(x)
-        x = layers.Dense(9, activation=layers.LeakyReLU(alpha=0.3))(x)
-        x = layers.Reshape((3, 3, 1))(x)
+        x = layers.Dense(81, activation=layers.LeakyReLU(alpha=0.3))(x)
+        x = layers.Reshape((9, 9, 1))(x)
 
         x = layers.Conv2DTranspose(128, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
         x = layers.Conv2DTranspose(64, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
-        x = layers.Conv2DTranspose(32, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=3)(x)
-        x = layers.Conv2D(3, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2DTranspose(32, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
+        # x = layers.Conv2D(3, 4, activation=layers.LeakyReLU(alpha=0.3), padding='same', strides=1)(x)
 
         decoded = layers.Conv2D(self.channels_out, 2, activation='selu', padding='valid', strides=1)(x)
 
@@ -101,6 +101,7 @@ class AE_PRED:
             self.decoder = keras.Model(encoded, decoded)
             self.autoencoder = keras.Model(input_img, self.decoder(self.encoder(input_img)))
         print(self.autoencoder.summary())
+        print(self.encoder.summary())
 
     def compile(self, loss='mse', metrics='mse'):
         self.autoencoder.compile(optimizer=tf.keras.optimizers.Adam(), loss=loss, metrics=metrics)

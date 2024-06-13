@@ -160,15 +160,15 @@ class Deviations:
         self.maxi = []
         self.diff_mean = []
 
-    def prepare_deviations(self, variables, months=range(52)):
+    def prepare_deviations(self, variables, months=range(52), border=2002):
         ds_X = xr.open_dataset('../North_1_deg_weekly_reduced.nc')
         size = ds_X.to_array().shape
-        x_train = np.zeros((len(months), 52, size[-2], size[-1], len(variables)))
-        x_test = np.zeros((len(months), 20, size[-2], size[-1], len(variables)))
-        for year in range(1950, 2002):
+        x_train = np.zeros((len(months), border-1950, size[-2], size[-1], len(variables)))
+        x_test = np.zeros((len(months), 1, size[-2], size[-1], len(variables)))
+        for year in range(1950, border):
             data_train = np.array(ds_X[variables].sel(time=ds_X.time.dt.year == year).to_array())
             x_train[:, year - 1950, :, :, :] = np.moveaxis(data_train, 0, -1)[months]
-        for year in range(2002, 2022):
+        for year in range(border, border+1):
             data_test = np.array(ds_X[variables].sel(time=ds_X.time.dt.year == year).to_array())
             x_test[:, year - 2002, :, :, :] = np.moveaxis(data_test, 0, -1)[months]
 

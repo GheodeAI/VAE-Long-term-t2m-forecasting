@@ -98,3 +98,39 @@ class AE_PRED:
 
     def encoder(self, x):
         return self.encoder(x)
+
+
+class MLP:
+    """The MLP methodology to handle the climate data
+
+    Args:
+        input_dim (int): The input size of the image (number of pixels, must be symmetric for both axes)
+        
+    """
+    def __init__(self, input_dim):
+        self.input_dim = input_dim
+        self._build()
+
+    def _build(self):
+        input_mlp = keras.Input(shape=self.input_dim)
+        x = layers.Dense(64, activation=layers.LeakyReLU(alpha=0.3))(input_mlp)
+        x = layers.Dropout(0.3)(x)
+        x = layers.Dense(32, activation=layers.LeakyReLU(alpha=0.3))(x)
+        x = layers.Dense(16, activation=layers.LeakyReLU(alpha=0.3))(x)
+        out = layers.Dense(1, activation=layers.LeakyReLU(alpha=0.3))(x)
+
+        self.mlp = keras.Model(input_mlp, out)
+        print(self.mlp.summary())
+
+    def compile(self, loss='mse', metrics='mse'):
+        self.mlp.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0005), loss=loss, metrics=metrics)
+
+    def fit(self, x, y, epochs=5000, batch_size=64, shuffle=True, validation_split=0.15, verbose=2):
+        callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=100, restore_best_weights=True)
+        self.mlp.fit(x, y,
+                     epochs=epochs,
+                     shuffle=shuffle,
+                     validation_split=validation_split,
+                     batch_size=batch_size,
+                     callbacks=callback,
+                     verbose=verbose)
